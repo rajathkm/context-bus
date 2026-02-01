@@ -1,44 +1,26 @@
 # AGENTS.md - Shared Agent Context
 
 This file is read by ALL models (Claude, Codex, Gemini, Local).
-Edit once, all agents see the same context.
+When you switch models, the new model reads this file to understand your project.
+
+## Current Status
+
+Task: None active
+Status: idle
 
 ## Project Context
 
-<!-- Add your project description here -->
-Project: [Your Project Name]
-Description: [What you're building]
-
-## Current Task
-
-<!-- Updated automatically by Context Bus, or manually -->
-Task: [Current task description]
-Status: idle | in_progress | blocked | completed
+Context Bus is installed and monitoring usage.
+Add your project details here as you work — they'll be preserved across model switches.
 
 ## Key Constraints
 
-<!-- Rules all models should follow -->
-- Follow existing code patterns
-- Write tests for new features
-- Keep functions under 50 lines
+- Context Bus monitors usage and auto-switches at 95%
+- All models read this file for shared context
+- Update this file as your project evolves
 
-## Important Files
+## Notes
 
-<!-- Files that provide context -->
-- README.md
-- src/main.ts
-- docs/architecture.md
-
-## Decisions Made
-
-<!-- Key architectural decisions -->
-- Using TypeScript for type safety
-- PostgreSQL for database
-- JWT for authentication
-
-## Notes for All Models
-
-<!-- Any model reading this should know -->
-- Run `npm test` before committing
-- Use conventional commits
-- Ask before deleting files
+- Model switching is automatic — no action needed
+- You'll be notified on Telegram/Discord/Slack when switches happen
+- Your work continues seamlessly across models

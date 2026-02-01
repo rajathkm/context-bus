@@ -29,8 +29,9 @@ Context Bus is designed to **augment, not replace**. It works whether you're sta
 
 If you're installing Context Bus in a fresh workspace:
 - All necessary files are **automatically created** for you
-- Templates include helpful comments and examples
-- You're ready to go immediately — just add your project details to `AGENTS.md`
+- **Works immediately** — no configuration required
+- Usage monitoring and auto-switching start right away
+- Optionally customize `AGENTS.md` later to improve context sharing between models
 
 ### Existing OpenClaw Users (Already Have Files)
 
