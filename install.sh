@@ -106,10 +106,11 @@ EOF
     echo "   ✅ Created rolling-summary.md"
 fi
 
-# Create workspace context files if in a project directory
+# Augment workspace context files (NEVER overwrite existing!)
 echo ""
 echo "📄 Setting up workspace context..."
 if [[ "$WORKSPACE" != "$HOME" ]] && [[ -d "$WORKSPACE" ]]; then
+    # AGENTS.md - only create if doesn't exist
     if [[ ! -f "${WORKSPACE}/AGENTS.md" ]]; then
         cat > "${WORKSPACE}/AGENTS.md" << 'EOF'
 # AGENTS.md - Shared Agent Context

@@ -1,0 +1,38 @@
+{
+  "name": "context-bus",
+  "version": "0.1.0",
+  "description": "Automatic model switching for AI coding agents with full context preservation",
+  "author": "Rajath KM",
+  "repository": "https://github.com/rajathkm/context-bus",
+  "install": {
+    "methods": [
+      {
+        "name": "pip",
+        "command": "pip install context-bus",
+        "post_install": "context-bus init"
+      },
+      {
+        "name": "curl",
+        "command": "curl -fsSL https://raw.githubusercontent.com/rajathkm/context-bus/main/install.sh | bash"
+      }
+    ]
+  },
+  "integration": {
+    "heartbeat": true,
+    "heartbeat_rules_file": "HEARTBEAT_RULES.md",
+    "skill_file": "SKILL.md"
+  },
+  "triggers": [
+    "install context bus",
+    "set up model switching",
+    "automatic model switching",
+    "context preservation",
+    "switch between models"
+  ],
+  "capabilities": [
+    "model_switching",
+    "context_preservation",
+    "usage_monitoring",
+    "notifications"
+  ]
+}

@@ -57,10 +57,24 @@ When you hit usage limits:
 
 Works on **macOS**, **Linux**, and **Windows** (native + WSL).
 
-### Quick Install
+### Via pip (Recommended)
+
+```bash
+pip install context-bus
+context-bus init
+```
+
+### Via curl (One-liner)
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/rajathkm/context-bus/main/install.sh | bash
+```
+
+### Via Clawdbot/OpenClaw
+
+Just ask your agent:
+```
+"Install Context Bus for automatic model switching"
 ```
 
 ### Manual Install
