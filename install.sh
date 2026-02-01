@@ -209,6 +209,50 @@ else
     echo "   ℹ️  No HEARTBEAT.md found (not using OpenClaw?)"
 fi
 
+# Set up background monitor (cron on Linux, launchd on macOS)
+echo ""
+echo "⏰ Setting up usage monitor..."
+if [[ "$(uname)" == "Darwin" ]]; then
+    # macOS: use launchd
+    PLIST_FILE="${HOME}/Library/LaunchAgents/com.contextbus.monitor.plist"
+    if [[ ! -f "$PLIST_FILE" ]]; then
+        cat > "$PLIST_FILE" << EOF
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.contextbus.monitor</string>
+    <key>ProgramArguments</key>
+    <array>
+        <string>${CONTEXT_BUS_DIR}/usage-monitor.sh</string>
+    </array>
+    <key>StartInterval</key>
+    <integer>600</integer>
+    <key>StandardOutPath</key>
+    <string>${CONTEXT_BUS_DIR}/monitor.log</string>
+    <key>StandardErrorPath</key>
+    <string>${CONTEXT_BUS_DIR}/monitor.err</string>
+    <key>RunAtLoad</key>
+    <true/>
+</dict>
+</plist>
+EOF
+        launchctl load "$PLIST_FILE" 2>/dev/null || true
+        echo "   ✅ LaunchAgent installed (runs every 10 min)"
+    else
+        echo "   ⏭️  LaunchAgent already exists"
+    fi
+else
+    # Linux: use cron
+    if ! crontab -l 2>/dev/null | grep -q "context-bus"; then
+        (crontab -l 2>/dev/null; echo "*/10 * * * * ${CONTEXT_BUS_DIR}/usage-monitor.sh >> ${CONTEXT_BUS_DIR}/monitor.log 2>&1") | crontab -
+        echo "   ✅ Cron job installed (runs every 10 min)"
+    else
+        echo "   ⏭️  Cron job already exists"
+    fi
+fi
+
 # Add to PATH
 echo ""
 echo "🔗 Updating PATH..."
