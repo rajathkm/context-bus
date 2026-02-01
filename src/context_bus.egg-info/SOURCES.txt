@@ -21,5 +21,6 @@ src/context_bus/scripts/setup.sh
 src/context_bus/scripts/update-handoff.sh
 src/context_bus/scripts/update-state.sh
 src/context_bus/scripts/update-usage.sh
+src/context_bus/scripts/usage-monitor.sh
 src/context_bus/templates/AGENTS.md
 src/context_bus/templates/MEMORY.md
