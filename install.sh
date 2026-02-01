@@ -191,22 +191,56 @@ if [[ -f "${WORKSPACE}/HEARTBEAT.md" ]]; then
         echo "" >> "${WORKSPACE}/HEARTBEAT.md"
         cat >> "${WORKSPACE}/HEARTBEAT.md" << 'EOF'
 
-## Context Bus Auto-Switch
+## Context Bus - Usage Monitor
 
-Check usage via `session_status`. If >= 95%:
-1. Run `~/.context-bus/context-handoff.sh opus codex auto_threshold`
-2. Notify user: "🔄 Auto-switched to Codex"
+**On every heartbeat, check model usage:**
 
-If usage < 50% AND on codex AND tasks idle:
-1. Run `~/.context-bus/model-router.sh --reset`
-2. Notify user: "🔄 Switched back to Opus"
+1. Run `session_status` to get current usage percentage
+2. Update handoff.json: `~/.context-bus/update-usage.sh <percentage>`
+3. Read current model from `~/.context-bus/handoff.json`
+
+**Auto-switch rules:**
+
+- If usage >= 95% AND model is "opus":
+  1. Run: `~/.context-bus/context-handoff.sh opus codex auto_threshold`
+  2. Notify: "🔄 Auto-switched to Codex (usage at X%)"
+
+- If usage < 50% AND model is "codex" AND task.status is "idle":
+  1. Update handoff.json: model.current = "opus"
+  2. Notify: "🔄 Switched back to Opus (limits reset)"
+
+**State file:** `~/.context-bus/handoff.json`
 EOF
         echo "   ✅ Added Context Bus rules to HEARTBEAT.md"
     else
         echo "   ⏭️  HEARTBEAT.md already has Context Bus rules"
     fi
 else
-    echo "   ℹ️  No HEARTBEAT.md found (not using OpenClaw?)"
+    # Create minimal HEARTBEAT.md with just Context Bus rules
+    cat > "${WORKSPACE}/HEARTBEAT.md" << 'EOF'
+# HEARTBEAT.md
+
+## Context Bus - Usage Monitor
+
+**On every heartbeat, check model usage:**
+
+1. Run `session_status` to get current usage percentage
+2. Update handoff.json: `~/.context-bus/update-usage.sh <percentage>`
+3. Read current model from `~/.context-bus/handoff.json`
+
+**Auto-switch rules:**
+
+- If usage >= 95% AND model is "opus":
+  1. Run: `~/.context-bus/context-handoff.sh opus codex auto_threshold`
+  2. Notify: "🔄 Auto-switched to Codex (usage at X%)"
+
+- If usage < 50% AND model is "codex" AND task.status is "idle":
+  1. Update handoff.json: model.current = "opus"
+  2. Notify: "🔄 Switched back to Opus (limits reset)"
+
+**State file:** `~/.context-bus/handoff.json`
+EOF
+    echo "   ✅ Created HEARTBEAT.md with Context Bus rules"
 fi
 
 # Set up background monitor (cron on Linux, launchd on macOS)
