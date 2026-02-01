@@ -1,12 +1,12 @@
-# Context Bus
+# Context Bus v3
 
 **Seamless multi-model orchestration for OpenClaw agents.**
 
-Automatically switch between Claude Opus, Codex, and Gemini when you hit usage limits — without losing context. Your agent keeps working, you get notified, and everything Just Works™.
+Automatically switch between Claude Opus, Codex, and Gemini when you hit usage limits — without losing context. Full context preservation with atomic writes, handoff expiry, and automatic switch-back.
 
 [![PyPI](https://img.shields.io/pypi/v/context-bus)](https://pypi.org/project/context-bus/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Platform](https://img.shields.io/badge/platform-macOS%20%7C%20Linux-blue)]()
+[![Platform](https://img.shields.io/badge/platform-macOS%20%7C%20Linux%20%7C%20Windows-blue)]()
 
 > 🔗 **GitHub:** https://github.com/rajathkm/context-bus
 > 
@@ -14,61 +14,31 @@ Automatically switch between Claude Opus, Codex, and Gemini when you hit usage l
 
 ---
 
-## ⚠️ Safe Install — Works With or Without Existing Files
+## ⚠️ Safe Install — Your Files Are Never Overwritten
 
-Context Bus is designed to **augment, not replace**. It works whether you're starting fresh or already have an established agent setup:
-
-| File | If It Already Exists | If It Doesn't Exist |
-|------|---------------------|---------------------|
-| `AGENTS.md` | ✅ **Left untouched** — your content is safe | ✅ **Auto-created** with starter template |
-| `MEMORY.md` | ✅ **Left untouched** — your content is safe | ✅ **Auto-created** with starter template |
-| `HEARTBEAT.md` | ✅ **Augmented** — adds Context Bus section only | ✅ **Auto-created** with monitoring rules |
-| `config.yaml` | ✅ **Left untouched** — your settings preserved | ✅ **Auto-created** with sensible defaults |
-
-### New Users (No Existing Files)
-
-If you're installing Context Bus in a fresh workspace:
-- All necessary files are **automatically created** for you
-- **Works immediately** — no configuration required
-- Usage monitoring and auto-switching start right away
-- Optionally customize `AGENTS.md` later to improve context sharing between models
-
-### Existing OpenClaw Users (Already Have Files)
-
-If you already have `AGENTS.md`, `MEMORY.md`, or `HEARTBEAT.md`:
-- **Your content is 100% preserved** — nothing is overwritten
-- Context Bus only **adds** its monitoring section to `HEARTBEAT.md`
-- Your existing agent memory, context, and rules remain intact
-
-**Bottom line:** Context Bus adapts to your setup. Install confidently.
+| File | If It Exists | If It Doesn't Exist |
+|------|--------------|---------------------|
+| `AGENTS.md` | ✅ **Left untouched** | Created with template |
+| `MEMORY.md` | ✅ **Left untouched** | Created with template |
+| `HEARTBEAT.md` | ✅ **Only adds** Context Bus section | Created with rules |
+| `config.yaml` | ✅ **Left untouched** | Created with defaults |
 
 ---
 
-## What Is This?
+## What's New in v3
 
-Context Bus solves a common problem for AI power users:
-
-> **You're deep in work with Claude Opus. You hit the usage limit. Now what?**
-
-Without Context Bus:
-- ❌ Switch to another model manually
-- ❌ Re-explain everything to the new model
-- ❌ Lose track of decisions and progress
-- ❌ Waste time catching up
-
-With Context Bus:
-- ✅ Automatic switch when limits approach
-- ✅ Full context preserved in shared files
-- ✅ Get notified on Telegram/Discord/Slack
-- ✅ Auto-switch back when limits reset
+| Feature | Description |
+|---------|-------------|
+| **Handoff Expiry** | 5-minute validity — no stale handoffs |
+| **Switch-Back** | Auto-returns to Opus when limits reset (<50%) |
+| **Atomic Writes** | Merge-based updates, no data loss |
+| **Model History** | Tracks all switches for multi-model flows |
+| **Offline Detection** | Skips switch if agent inactive >30 min |
+| **Log Rotation** | Auto-compresses logs at 10MB |
 
 ---
 
-## Quick Start (OpenClaw/Clawdbot Users)
-
-> **Built for OpenClaw** — Context Bus integrates seamlessly with your Clawdbot.
-> 
-> 📖 Full docs: https://github.com/rajathkm/context-bus
+## Quick Start (OpenClaw/Clawdbot)
 
 ### 1. Install
 
@@ -77,161 +47,129 @@ pip install context-bus
 context-bus init
 ```
 
-Or just tell your Clawdbot:
+Or tell your Clawdbot:
 ```
 "Install Context Bus for automatic model switching"
 ```
 
-Your Clawdbot will run the install command and set everything up automatically.
-
-### 2. That's It — No Config Needed
+### 2. That's It
 
 The installer automatically:
-- ✅ Creates shared context files (`AGENTS.md`, `MEMORY.md`)
-- ✅ Adds usage monitoring rules to your `HEARTBEAT.md`
-- ✅ Sets up a background monitor (every 10 minutes)
-- ✅ Initializes state tracking (`~/.context-bus/handoff.json`)
-
-Your Clawdbot will now:
-1. Check usage on every heartbeat
-2. Update the handoff file with current usage %
-3. Auto-switch at 95% usage
-4. Notify you when switching
-5. Switch back when limits reset
+- ✅ Creates `.context-bus/` with handoff.json (v3 schema)
+- ✅ Adds monitoring rules to HEARTBEAT.md
+- ✅ Sets up background monitor (every 5 min)
+- ✅ Creates config at `~/.config/context-bus/config.yaml`
 
 ---
 
 ## How It Works
 
-### The Flow
-
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │                    YOUR CLAWDBOT                            │
 │                                                             │
-│  Heartbeat fires every ~30 min                              │
+│  Heartbeat fires                                            │
 │       ↓                                                     │
-│  Reads HEARTBEAT.md → sees Context Bus rules                │
+│  session_status → "Usage: 87%"                              │
 │       ↓                                                     │
-│  Runs session_status → "Usage: 87%"                         │
+│  Updates .context-bus/handoff.json                          │
 │       ↓                                                     │
-│  Runs: ~/.context-bus/update-usage.sh 87                    │
-│       ↓                                                     │
-│  handoff.json updated: usage_percent = 87                   │
+│  handoff_ready = true, expires in 5 min                     │
 │                                                             │
 └─────────────────────────────────────────────────────────────┘
                               ↓
 ┌─────────────────────────────────────────────────────────────┐
-│               BACKGROUND MONITOR (every 10 min)             │
+│               BACKGROUND MONITOR (every 5 min)              │
 │                                                             │
-│  Reads handoff.json → usage = 87%                           │
-│  87% < 95% threshold → no action                            │
-│                                                             │
-│  [Next check: usage = 96%]                                  │
-│  96% >= 95% → TRIGGER SWITCH                                │
+│  Reads handoff.json → usage = 96%                           │
+│  Validates: ready? not expired? checksum OK?                │
 │       ↓                                                     │
-│  Update handoff.json: model = "codex"                       │
-│  Send notification: "🔄 Switched to Codex (96%)"            │
+│  96% >= 95% → SWITCH                                        │
+│  Updates model.current = "codex"                            │
+│  Adds to model.history                                      │
+│  Notifies: "🔄 Opus → Codex (96%)"                          │
 │                                                             │
-└─────────────────────────────────────────────────────────────┘
-                              ↓
-┌─────────────────────────────────────────────────────────────┐
-│                     MODELS                                  │
-│                                                             │
-│   Opus (Primary) ←→ Codex (Secondary) ←→ Gemini (Tertiary) │
-│                                                             │
-│   All models read the same context files:                   │
-│   • AGENTS.md — project context, current task               │
-│   • MEMORY.md — long-term memory, decisions                 │
-│   • handoff.json — structured state                         │
+│  [Later: usage drops to 40%]                                │
+│  40% < 50% AND task idle → SWITCH BACK                      │
+│  Notifies: "🔄 Codex → Opus (limits reset)"                 │
 │                                                             │
 └─────────────────────────────────────────────────────────────┘
 ```
 
-### Shared Context Files
+---
 
-All models read from the same files, so context is never lost:
+## File Structure
 
-**AGENTS.md** — Project context that every model sees:
-```markdown
-# AGENTS.md
+```
+WORKSPACE/
+├── .context-bus/
+│   ├── handoff.json           ← v3 schema with expiry
+│   ├── rolling-summary.md     ← Session summary (YAML frontmatter)
+│   ├── history.jsonl          ← Event log (rotated at 10MB)
+│   ├── usage-monitor.sh       ← Background monitor
+│   └── handoff-utils.sh       ← Atomic write utilities
+│
+├── AGENTS.md                   ← References .context-bus/
+├── MEMORY.md                   ← Long-term memory
+└── HEARTBEAT.md                ← Context Bus rules
 
-## Project Context
-Building a task management API with PostgreSQL.
-
-## Current Task  
-Implementing OAuth authentication.
-
-## Key Constraints
-- Use TypeScript
-- Write tests for all endpoints
-- Follow existing patterns
-
-## Decisions Made
-- JWT tokens with 1-hour expiry
-- Refresh tokens in httpOnly cookies
+~/.config/context-bus/
+└── config.yaml                 ← Thresholds, notifications
 ```
 
-**MEMORY.md** — Long-term memory across sessions:
-```markdown
-# MEMORY.md
+---
 
-## Lessons Learned
-- Always run migrations before testing
-- User prefers concise responses
+## Handoff.json v3 Schema
 
-## User Preferences
-- TypeScript over JavaScript
-- Prefers functional patterns
-```
-
-**handoff.json** — Machine-readable state:
 ```json
 {
+  "schema_version": 3,
+  "sequence": 47,
+  "timestamp": "2026-02-01T15:15:00+05:30",
+  "handoff_ready": true,
+  "handoff_expires": "2026-02-01T15:20:00+05:30",
+  "checksum": "sha256:abc123...",
+  
   "model": {
     "current": "codex",
-    "previous": "opus",
     "usage_percent": 96,
-    "switch_reason": "auto_threshold"
+    "history": [
+      {"model": "opus", "until": "...", "reason": "auto_threshold"}
+    ]
   },
+  
   "task": {
-    "description": "Implementing OAuth",
+    "description": "Building authentication",
     "status": "in_progress"
   },
-  "next_steps": ["Add token refresh", "Write tests"]
+  
+  "context": {
+    "recent_actions": ["Created auth.ts", "Added tests"],
+    "decisions": ["Using JWT with 1h expiry"],
+    "next_steps": ["Add refresh logic"]
+  }
 }
 ```
 
 ---
 
-## Installation
-
-### For OpenClaw/Clawdbot Users
+## CLI Commands
 
 ```bash
-pip install context-bus
+# Initialize in workspace
 context-bus init
-```
 
-The installer will:
-1. Create `~/.context-bus/` with scripts and state
-2. Create `~/.config/context-bus/config.yaml`
-3. Add `AGENTS.md` and `MEMORY.md` to your workspace (if they don't exist)
-4. **Augment** your `HEARTBEAT.md` with usage monitoring rules (won't overwrite existing content)
-5. Set up background monitor (launchd on macOS, cron on Linux)
+# Check status
+context-bus status
 
-### For Other Agents (Claude Code, Cursor, etc.)
+# Update usage (from heartbeat)
+context-bus update 87
 
-```bash
-pip install context-bus
-context-bus init
-```
+# Manual switch
+context-bus switch codex --reason "testing"
 
-Then add to your agent's system prompt:
-```
-Before starting work, read AGENTS.md and MEMORY.md for context.
-After significant work, update these files.
-Periodically check ~/.context-bus/handoff.json for model state.
+# View config
+context-bus config --show
 ```
 
 ---
@@ -241,147 +179,57 @@ Periodically check ~/.context-bus/handoff.json for model state.
 Edit `~/.config/context-bus/config.yaml`:
 
 ```yaml
-# Models
+workspace: ~/clawd
+
 models:
-  primary: opus        # Your main model
-  secondary: codex     # Fallback when primary hits limits
-  tertiary: gemini     # Optional third fallback
+  primary: opus
+  secondary: codex
+  tertiary: gemini
 
-# Thresholds
 thresholds:
-  switch_to_secondary: 95    # Switch at 95% usage
-  switch_back: 50            # Switch back when usage drops below 50%
+  switch_to_secondary: 95    # Switch at 95%
+  switch_back: 50            # Return at <50%
+  proactive_summary: 80      # Generate summary at 80%
 
-# Notifications
-notifications:
-  enabled: true
-  channel: telegram          # telegram | discord | slack | none
-  telegram:
-    chat_id: "YOUR_CHAT_ID"  # Get from @userinfobot on Telegram
-```
+safety:
+  max_handoff_age_seconds: 300
+  offline_abort_minutes: 30
 
----
-
-## CLI Commands
-
-```bash
-# Initialize in a workspace
-context-bus init
-
-# Check current status
-context-bus status
-
-# Manual model switching
-context-bus switch codex
-context-bus switch opus
-
-# View/edit configuration
-context-bus config --show
-context-bus config --edit
-```
-
----
-
-## What Gets Installed
-
-```
-~/.context-bus/
-├── handoff.json           # Current state (model, usage, task)
-├── rolling-summary.md     # Human-readable session summary
-├── usage-monitor.sh       # Background monitor script
-├── update-usage.sh        # Update usage percentage
-├── context-handoff.sh     # Generate handoff for model switch
-└── monitor.log            # Monitor logs
-
-~/.config/context-bus/
-└── config.yaml            # Your configuration
-
-~/your-workspace/
-├── AGENTS.md              # Shared project context
-├── MEMORY.md              # Long-term memory
-└── HEARTBEAT.md           # + Context Bus monitoring rules
-```
-
----
-
-## Safety Features
-
-Context Bus includes safeguards to prevent issues:
-
-| Feature | What It Does |
-|---------|--------------|
-| **Safe augment** | Never overwrites existing files, only adds to them |
-| **Task check** | Won't switch back to primary if a task is in progress |
-| **Cooldown** | Minimum 5 minutes between switches |
-| **Notifications** | Always notifies you when switching |
-
----
-
-## Notifications
-
-### Telegram (Recommended for OpenClaw)
-
-1. Message [@userinfobot](https://t.me/userinfobot) to get your chat ID
-2. Add to config:
-```yaml
 notifications:
   channel: telegram
   telegram:
-    chat_id: "123456789"
+    chat_id: "YOUR_CHAT_ID"
 ```
 
-You'll get messages like:
-```
-🔄 [Context Bus] Opus → Codex
-   Usage: 96%
-   Context preserved ✓
+---
 
-🔄 [Context Bus] Codex → Opus  
-   Limits reset (usage: 12%)
-   Welcome back!
-```
+## Guarantees
 
-### Discord
+| Guarantee | How |
+|-----------|-----|
+| **No stale handoff** | 5-min expiry + age validation |
+| **No data loss** | Merge-based atomic writes |
+| **No missed switches** | 5-min monitor interval |
+| **No stuck on fallback** | Auto switch-back at <50% |
+| **No offline mistakes** | Abort if inactive >30 min |
+| **No log overflow** | Rotate at 10MB |
 
-```yaml
-notifications:
-  channel: discord
-  discord:
-    webhook_url: "https://discord.com/api/webhooks/..."
-```
+---
 
-### Slack
+## Platform Support
 
-```yaml
-notifications:
-  channel: slack
-  slack:
-    webhook_url: "https://hooks.slack.com/services/..."
-```
+| Platform | Monitor | Status |
+|----------|---------|--------|
+| macOS | launchd | ✅ Full support |
+| Linux | cron | ✅ Full support |
+| Windows | Task Scheduler | ✅ Supported |
+| WSL | cron | ✅ Works |
 
 ---
 
 ## Troubleshooting
 
-### Auto-switch didn't trigger
-
-**Cause:** Usage wasn't being updated in handoff.json
-
-**Fix:** Ensure your HEARTBEAT.md has the Context Bus rules. Check:
-```bash
-grep "Context Bus" ~/your-workspace/HEARTBEAT.md
-```
-
-If missing, re-run `context-bus init` or manually add the rules.
-
-### Notifications not sending
-
-**Fix:** Verify your chat ID:
-```bash
-cat ~/.config/context-bus/config.yaml | grep chat_id
-```
-
-### Check monitor status
+### Monitor not running
 
 ```bash
 # macOS
@@ -391,20 +239,13 @@ launchctl list | grep contextbus
 tail -20 ~/.context-bus/monitor.log
 ```
 
----
+### Handoff expired
 
-## Uninstall
+The agent needs to update handoff.json every 5 minutes. Ensure HEARTBEAT.md rules are running.
 
-```bash
-pip uninstall context-bus
+### Switch-back not happening
 
-# Remove files
-rm -rf ~/.context-bus ~/.config/context-bus
-
-# macOS: remove launchd job
-launchctl unload ~/Library/LaunchAgents/com.contextbus.monitor.plist
-rm ~/Library/LaunchAgents/com.contextbus.monitor.plist
-```
+Check task status — switch-back only happens when `task.status` is "idle" or "completed".
 
 ---
 
@@ -413,16 +254,9 @@ rm ~/Library/LaunchAgents/com.contextbus.monitor.plist
 - **PyPI:** https://pypi.org/project/context-bus/
 - **GitHub:** https://github.com/rajathkm/context-bus
 - **Issues:** https://github.com/rajathkm/context-bus/issues
-- **OpenClaw:** https://github.com/openclaw/openclaw
 
 ---
 
 ## License
 
 MIT License - see [LICENSE](LICENSE)
-
----
-
-## Contributing
-
-Contributions welcome! See [CONTRIBUTING.md](CONTRIBUTING.md)
