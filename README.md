@@ -8,6 +8,25 @@ Automatically switch between Claude Opus, Codex, and Gemini when you hit usage l
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Platform](https://img.shields.io/badge/platform-macOS%20%7C%20Linux-blue)]()
 
+> 🔗 **GitHub:** https://github.com/rajathkm/context-bus
+> 
+> 📦 **Install:** `pip install context-bus && context-bus init`
+
+---
+
+## ⚠️ Safe Install — Your Files Are Never Overwritten
+
+Context Bus is designed to **augment, not replace**:
+
+| File | If It Exists | If It Doesn't Exist |
+|------|--------------|---------------------|
+| `AGENTS.md` | ✅ **Left untouched** | Created with template |
+| `MEMORY.md` | ✅ **Left untouched** | Created with template |
+| `HEARTBEAT.md` | ✅ **Only adds** Context Bus section | Created with rules |
+| `config.yaml` | ✅ **Left untouched** | Created with defaults |
+
+**Your existing agent configuration, memory, and context are 100% safe.**
+
 ---
 
 ## What Is This?
@@ -30,7 +49,11 @@ With Context Bus:
 
 ---
 
-## Quick Start (OpenClaw Users)
+## Quick Start (OpenClaw/Clawdbot Users)
+
+> **Built for OpenClaw** — Context Bus integrates seamlessly with your Clawdbot.
+> 
+> 📖 Full docs: https://github.com/rajathkm/context-bus
 
 ### 1. Install
 
@@ -44,7 +67,9 @@ Or just tell your Clawdbot:
 "Install Context Bus for automatic model switching"
 ```
 
-### 2. That's It
+Your Clawdbot will run the install command and set everything up automatically.
+
+### 2. That's It — No Config Needed
 
 The installer automatically:
 - ✅ Creates shared context files (`AGENTS.md`, `MEMORY.md`)
