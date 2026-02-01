@@ -14,18 +14,32 @@ Automatically switch between Claude Opus, Codex, and Gemini when you hit usage l
 
 ---
 
-## ⚠️ Safe Install — Your Files Are Never Overwritten
+## ⚠️ Safe Install — Works With or Without Existing Files
 
-Context Bus is designed to **augment, not replace**:
+Context Bus is designed to **augment, not replace**. It works whether you're starting fresh or already have an established agent setup:
 
-| File | If It Exists | If It Doesn't Exist |
-|------|--------------|---------------------|
-| `AGENTS.md` | ✅ **Left untouched** | Created with template |
-| `MEMORY.md` | ✅ **Left untouched** | Created with template |
-| `HEARTBEAT.md` | ✅ **Only adds** Context Bus section | Created with rules |
-| `config.yaml` | ✅ **Left untouched** | Created with defaults |
+| File | If It Already Exists | If It Doesn't Exist |
+|------|---------------------|---------------------|
+| `AGENTS.md` | ✅ **Left untouched** — your content is safe | ✅ **Auto-created** with starter template |
+| `MEMORY.md` | ✅ **Left untouched** — your content is safe | ✅ **Auto-created** with starter template |
+| `HEARTBEAT.md` | ✅ **Augmented** — adds Context Bus section only | ✅ **Auto-created** with monitoring rules |
+| `config.yaml` | ✅ **Left untouched** — your settings preserved | ✅ **Auto-created** with sensible defaults |
 
-**Your existing agent configuration, memory, and context are 100% safe.**
+### New Users (No Existing Files)
+
+If you're installing Context Bus in a fresh workspace:
+- All necessary files are **automatically created** for you
+- Templates include helpful comments and examples
+- You're ready to go immediately — just add your project details to `AGENTS.md`
+
+### Existing OpenClaw Users (Already Have Files)
+
+If you already have `AGENTS.md`, `MEMORY.md`, or `HEARTBEAT.md`:
+- **Your content is 100% preserved** — nothing is overwritten
+- Context Bus only **adds** its monitoring section to `HEARTBEAT.md`
+- Your existing agent memory, context, and rules remain intact
+
+**Bottom line:** Context Bus adapts to your setup. Install confidently.
 
 ---
 
