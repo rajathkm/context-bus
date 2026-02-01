@@ -17,16 +17,39 @@ Never lose context when switching between Claude Opus, Codex, Gemini CLI, or loc
 - 🔒 **Safe switching** — won't interrupt active tasks
 - 🤖 **OpenClaw/Clawdbot integration** — works out of the box
 
-## How It's Different from Agent Rules Sync
+## What Context Bus Does
+
+Context Bus provides **two key capabilities**:
+
+### 1. Shared Context Layer (like Agent Sync, but for context)
+
+All models read from the same files:
+- `AGENTS.md` - Project context, constraints, current task
+- `MEMORY.md` - Long-term memory, decisions, preferences
+- `handoff.json` - Structured state for machine parsing
+
+**Edit once → all models see the same context.** No re-explaining when you switch models.
+
+### 2. Automatic Model Switching
+
+When you hit usage limits:
+- Auto-generates context summary
+- Switches to fallback model
+- Preserves full context
+- Notifies you
+- Auto-returns when limits reset
+
+## Comparison with Agent Rules Sync
 
 | Feature | Agent Rules Sync | Context Bus |
 |---------|------------------|-------------|
-| **Purpose** | Sync *rules* between agents | Switch *models* with context |
-| **What it preserves** | Configuration/rules | Conversation context + state |
-| **When it triggers** | On rule edit | On usage limits |
-| **Models supported** | N/A (rule sync only) | Claude, Codex, Gemini, Local |
+| **Syncs rules** | ✅ Yes | ❌ No |
+| **Syncs context** | ❌ No | ✅ Yes |
+| **Model switching** | ❌ No | ✅ Yes |
+| **Handoff protocol** | ❌ No | ✅ Yes |
+| **Usage monitoring** | ❌ No | ✅ Yes |
 
-**They're complementary!** Use Agent Rules Sync for consistent rules + Context Bus for seamless model switching.
+**Use both together!** Agent Rules Sync for consistent rules + Context Bus for shared context and model switching.
 
 ---
 
