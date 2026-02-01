@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "context-bus"
-version = "0.1.1"
+version = "0.2.0"
 description = "Automatic model switching for AI coding agents with full context preservation"
 readme = "README.md"
 license = {text = "MIT"}
