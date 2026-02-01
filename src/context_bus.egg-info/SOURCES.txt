@@ -13,6 +13,7 @@ src/context_bus.egg-info/top_level.txt
 src/context_bus/scripts/auto-update-task.sh
 src/context_bus/scripts/check-usage.sh
 src/context_bus/scripts/context-handoff.sh
+src/context_bus/scripts/generate-summary.sh
 src/context_bus/scripts/handoff-utils.sh
 src/context_bus/scripts/kimi-summarize.sh
 src/context_bus/scripts/model-router.sh
